@@ -17,6 +17,7 @@ This project is built using the following technologies and design principles:
 - **.NET 8 (ASP.NET Core Web API)**
 - **Entity Framework Core**
 - **SQL Server**
+- **Mongo DB**
 - **CQRS Pattern** (Command and Query separation)
 - **Domain-Driven Design (DDD)**
 - **Clean Architecture**
