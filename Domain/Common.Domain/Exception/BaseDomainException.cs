@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Common.Domain.Extention;
+namespace Domain.Common.Domain.Exception;
 
-public class BaseDomainException:Exception
+public class BaseDomainException:System.Exception
 { 
     public BaseDomainException() 
     {
