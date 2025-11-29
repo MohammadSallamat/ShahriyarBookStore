@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Common.Domain.Exception;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
