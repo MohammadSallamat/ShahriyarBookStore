@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Category\**" />
-    <EmbeddedResource Remove="Category\**" />
-    <None Remove="Category\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.0" />
     <PackageReference Include="HtmlSanitizer" Version="9.0.889" />
     <PackageReference Include="MediatR" Version="13.1.0" />

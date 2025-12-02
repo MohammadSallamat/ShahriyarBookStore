@@ -8,7 +8,8 @@ namespace Application.CommonApplication;
 public class OperationResult<TData>
 {
     public const string SuccessMessage = "عملیات با موفقیت انجام شد";
-
+    public const string ErrorMessage = "عملیات با شکست مواجه شد";
+    public const string NotFoundMessage = "اطلاعات یافت نشد";
     public string Message { get; set; }
     public string Title { get; set; } = null;
     public OperationResultStatus Status { get; set; }
@@ -18,7 +19,7 @@ public class OperationResult<TData>
         return new OperationResult<TData>()
         {
             Status = OperationResultStatus.Success,
-            Title = SuccessMessage,
+            Message = SuccessMessage,
             Data = data,
         };
     }
@@ -27,7 +28,7 @@ public class OperationResult<TData>
         return new OperationResult<TData>()
         {
             Status = OperationResultStatus.NotFound,
-            Title = "NotFound",
+            Message = NotFoundMessage,
             Data = default(TData),
         };
     }
