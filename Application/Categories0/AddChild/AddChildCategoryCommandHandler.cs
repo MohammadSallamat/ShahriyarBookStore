@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Categories0.AddChild;
 
-public class AddChildCategoryCommandHandler : IBaseCommandHandler<AddChildCategoryCommand, long>
+public class AddChildCategoryCommandHandler : IBaseCommandHandler<AddChildCategoryCommand,long>
 {
     private readonly ICategoryRepository _repository;
     private readonly ICategoryDomainService _domainServicer;
