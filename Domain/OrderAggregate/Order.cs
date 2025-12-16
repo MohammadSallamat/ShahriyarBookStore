@@ -46,21 +46,61 @@ public class Order : AggregateRoot
     }
     public int ItemCount=>Items.Count;
 
-    public void AddItem(OrderItem item)
+    public void AddItem(OrderItem item, int currentInventoryCount )
     {
+        ChangeOrderGuard();
+
+        if (currentInventoryCount < item.Count)
+            throw new InvalidDomainDataException("تعداد درخواستی از موجودی محصول بیشتر است.");
+
+        var oldItem=Items.FirstOrDefault(f=>f.InventoryId == item.InventoryId);
+        if (oldItem != null)
+        {
+            oldItem.ChangeCount(oldItem.Count+item.Count);
+            if (currentInventoryCount < oldItem.Count)
+                throw new InvalidDomainDataException("تعداد درخواستی از موجودی محصول بیشتر است.");
+            return;
+        }
+
         Items.Add(item);
     }
+
     public void RemoveItem(long itemId)
     {
+        ChangeOrderGuard();
+ 
         var currentItem = Items.FirstOrDefault(f => f.Id == itemId);
         if (currentItem != null)
             Items.Remove(currentItem);
     }
 
+    public void IncreaseOrderItemCount(long itemId, int count)
+    {
+        ChangeOrderGuard();
+
+        var currentItem = Items.FirstOrDefault(x => x.Id == itemId);
+        if (currentItem == null)
+            throw new NullOrEmptyDomainDataException();
+
+        currentItem.IncreaseCount(count);
+    }
+
+    public void DecreaseOrderItemCount(long itemId, int count)
+    {
+        ChangeOrderGuard();
+
+        var currentItem = Items.FirstOrDefault(x => x.Id == itemId);
+        if (currentItem == null)
+            throw new NullOrEmptyDomainDataException();
+
+        currentItem.DecreaseCount(count);
+    }
     public void ChangeCountItem(long itemId, int newCount)
     {
+        ChangeOrderGuard();
+
         var currentItem = Items.FirstOrDefault(f => f.Id == itemId);
-        if(currentItem != null)
+        if(currentItem == null)
             throw new NullOrEmptyDomainDataException();
         currentItem.ChangeCount(newCount);
     }
@@ -73,7 +113,16 @@ public class Order : AggregateRoot
 
     public void CheckOut(OrderAddress orderAddress)
     {
+        ChangeOrderGuard();
 
        Address= orderAddress;
     }
+    public void ChangeOrderGuard()
+    {
+        if (Status != OrderStatus.Pennding)
+        
+            throw new InvalidDomainDataException("امکان ویرایش محصول وجود ندارد.");
+        
+    }
+
 }

@@ -32,6 +32,20 @@ public class OrderItem:BaseEntity
         Count = newCount;
     }
 
+    public void IncreaseCount(int newCount)
+    {
+        Count += newCount;
+    }
+    public void DecreaseCount(int newCount)
+    {
+        if (Count < 1)
+            return;
+        if(Count - newCount <= 0)
+            return; 
+        Count -= newCount;
+    }
+
+
     public void SetPrice(int newPrice)
     {
         PriceGuard(newPrice);
