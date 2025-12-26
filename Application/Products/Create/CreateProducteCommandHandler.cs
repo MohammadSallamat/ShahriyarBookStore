@@ -32,6 +32,7 @@ internal class CreateProducteCommandHandler : IBaseCommandHandler<CreateProducte
         product.SetSpecification(specifications);
 
         await _repository.Add(product);
+        await _repository.Save();
         return OperationResult.Success();
     }
 }

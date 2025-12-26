@@ -1,5 +1,6 @@
 ﻿using Domain.Common.Domain;
 using Domain.Common.Domain.Extention;
+using Domain.RoleAggregate.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,12 @@ public class Role : AggregateRoot
     public string Title { get; private set; }
     public List<RolePermission> Permissions { get; private set; }
 
-    public Role(string title, List<RolePermission> permissions)
+    public Role(string title)
     {
         NullOrEmptyDomainDataException.CheckString(title, nameof(title));
 
         Title = title;
-        Permissions = permissions;
+        Permissions = new();
     }
 
     public void EditTitle(string title)
@@ -26,9 +27,19 @@ public class Role : AggregateRoot
         NullOrEmptyDomainDataException.CheckString(title, nameof(title));
         Title = title;
     }
-
-    public void SetPermission(List<RolePermission> permissions)
+    public void AddPermission(Permission permission)
     {
-        Permissions = permissions;
+        if (Permissions.Any(p => p.Permission == permission))
+            return;
+
+        Permissions.Add(new RolePermission(permission));
+    }
+
+    public void RemovePermission(Permission permission)
+    {
+        var rp = Permissions.FirstOrDefault(p => p.Permission == permission);
+        if (rp == null) return;
+
+        Permissions.Remove(rp);
     }
 }
