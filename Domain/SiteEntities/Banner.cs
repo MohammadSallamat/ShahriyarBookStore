@@ -16,29 +16,32 @@ public class Banner : BaseEntity
 
     public Banner(string link, string imageName, BannerPosition position)
     {
-        Guard(link, imageName);
+        Guard(link);
         Link = link;
         ImageName = imageName;
         Position = position;
     }
 
-    public void Edit(string link, string imageName, BannerPosition position)
+    public void Edit(string link,BannerPosition position)
     {
-        Guard(link, imageName);
+        Guard(link);
         Link = link;
-        ImageName = imageName;
         Position = position;
     }
 
-    public void Guard(string link, string imageName)
+    public void SetImage(string imageName)
+    {
+        NullOrEmptyDomainDataException.CheckString(imageName, nameof(imageName));
+        ImageName = imageName;
+    }
+    public void Guard(string link)
     {
         NullOrEmptyDomainDataException.CheckString(link, nameof(link));
-        NullOrEmptyDomainDataException.CheckString(imageName, nameof(imageName));
     }
 }
 
 public enum BannerPosition
 {
     زیر_اسلایدر,
-    سمت_راست_اسلایر
+    سمت_راست_اسلایدر
 }

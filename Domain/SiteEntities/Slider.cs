@@ -16,25 +16,28 @@ public class Slider : BaseEntity
 
     public Slider(string title, string link, string imageName)
     {
-        Guard(title, link, imageName);
+        Guard(title, link);
 
         Title = title;
         Link = link;
         ImageName = imageName;
     }
 
-    public void Edit(string title, string link, string imageName)
+    public void Edit(string title, string link)
     {
-        Guard(title, link, imageName);
+        Guard(title, link);
         Title = title;
         Link = link;
-        ImageName = imageName;
     }
 
-    public void Guard(string title, string link, string imageName)
+    public void SetImage(string imageName)
+    {
+        NullOrEmptyDomainDataException.CheckString(imageName, nameof(imageName));
+        ImageName = imageName;
+    }
+    public void Guard(string title, string link)
     {
         NullOrEmptyDomainDataException.CheckString(link, nameof(link));
-        NullOrEmptyDomainDataException.CheckString(imageName, nameof(imageName));
         NullOrEmptyDomainDataException.CheckString(title, nameof(title));
     }
 }
