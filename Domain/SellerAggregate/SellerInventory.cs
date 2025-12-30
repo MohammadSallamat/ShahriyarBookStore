@@ -13,7 +13,7 @@ public class SellerInventory:BaseEntity
 {
     public SellerInventory(long productId, int count, int price, int? discountPercentage = null)
     {
-        if (price < 1 || count < 0)
+        if (price < 1000 || count < 0)
             throw new InvalidDomainDataException();
 
         ProductId = productId;
@@ -31,7 +31,7 @@ public class SellerInventory:BaseEntity
 
     public void Edit(int count, int price, int? discountPercentage = null)
     {
-        if (price < 1 || count < 0)
+        if (price < 1000 || count < 0)
             throw new InvalidDomainDataException();
 
         Count = count;

@@ -1,8 +1,10 @@
 ﻿using Domain.Common.Domain;
 using Domain.Common.Domain.Extention;
 using Domain.SellerAggregate.Enums;
+using Domain.SellerAggregate.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,13 +21,17 @@ public class Seller:AggregateRoot
     public List<SellerInventory> Inventories { get; private set; }
 
 
-    public Seller(long userId, string shopName, string nationalCode)
+    public Seller(long userId, string shopName, string nationalCode, ISellerDomainService domainService)
     {
         Guard(shopName, nationalCode);
         UserId = userId;
         ShopName = shopName;
         NationalCode = nationalCode;
-        Inventories = new List<SellerInventory>();
+        Inventories = new ();
+
+        if (domainService.IsValidSellerInformation(this) == false)
+            throw new InvalidDomainDataException("اطلاعات نامعتبر است");
+
     }
 
     public void ChangeStatus(SellerStatus status)
@@ -34,9 +40,13 @@ public class Seller:AggregateRoot
         LastUpdate = DateTime.Now;
     }
 
-    public void Edit(string shopName, string nationalCode, SellerStatus status )
+    public void Edit(string shopName, string nationalCode, SellerStatus status,ISellerDomainService domainService )
     {
+
         Guard(shopName, nationalCode);
+        if (nationalCode != NationalCode)
+            if (domainService.NationalCodeExistInDataBase(nationalCode))
+                throw new InvalidDomainDataException("کدملی متعلق به شخص دیگری است");
         ShopName = shopName;
         NationalCode = nationalCode;
         Status = status;
@@ -56,7 +66,6 @@ public class Seller:AggregateRoot
         if (currentInventory == null)
             throw new NullOrEmptyDomainDataException("محصول یافت نشد");
 
-        //TODO Check Inventories
         currentInventory.Edit(count, price, discountPercentage);
     }
 

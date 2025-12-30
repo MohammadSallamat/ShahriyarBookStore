@@ -13,7 +13,7 @@ public interface IBaseRepository<T> where T : BaseEntity
 
     Task<T> GetTracking(long id);
 
-    Task Add(T entity);
+    void Add(T entity);
 
     Task AddRange(ICollection<T> entities);
 
