@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Common.Domain.ValueObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Domain.UserAggregate.DomainServices;
 
 public interface IDomainUserService
 {
-    bool PhoneNumberIsExist(string phone);
+    bool PhoneNumberIsExist(PhoneNumber phone);
     bool EmailIsExist(string email);
 }

@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
+﻿
+using Konscious.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.CommonApplication.SecurityUtil
+namespace Application.CommonApplication.SecurityUtil;
+
+
+public class PasswordHasher
 {
-    public static class PasswordHelper
+    public static string HashPassword(string password, byte[] salt)
     {
-        public static string EncodePasswordMd5(string pass) //Encrypt using MD5   
+        var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
         {
-            Byte[] originalBytes;
-            Byte[] encodedBytes;
-            MD5 md5;
-            //Instantiate MD5CryptoServiceProvider, get bytes for original password and compute hash (encoded password)   
-            md5 = new MD5CryptoServiceProvider();
-            originalBytes = ASCIIEncoding.Default.GetBytes(pass);
-            encodedBytes = md5.ComputeHash(originalBytes);
-            //Convert encoded bytes back to a 'readable' string   
-            return BitConverter.ToString(encodedBytes);
-        }
+            Salt = salt,
+            DegreeOfParallelism = 8, // تعداد Thread ها
+            Iterations = 4,          // تعداد تکرار
+            MemorySize = 1024 * 64   // حافظه مصرفی (64MB)
+        };
+
+        var hash = argon2.GetBytes(32); // خروجی 32 بایت
+        return Convert.ToBase64String(hash);
     }
 }

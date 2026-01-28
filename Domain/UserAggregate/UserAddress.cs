@@ -1,11 +1,7 @@
 ﻿using Domain.Common.Domain;
 using Domain.Common.Domain.Extention;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Domain.Common.Domain.ValueObjects;
 
 namespace Domain.UserAggregate;
 
@@ -14,8 +10,7 @@ public class UserAddress:BaseEntity
     public long UserId { get; internal set; }
     public string Name { get; private set; }
     public string Family { get; private set; }
-    public string PhoneNumber { get; private set; }
-    public string? Email { get; private set; }
+    public PhoneNumber PhoneNumber { get; private set; }
     public string Province { get; private set; }
     public string City { get; private set; }
     public string PostalCode { get; private set; }
@@ -23,14 +18,13 @@ public class UserAddress:BaseEntity
     public string NationalCode { get; private set; }
     public bool ISActive { get; private set; }
 
-    public UserAddress(string name, string family, string phoneNumber, string? email,
+    public UserAddress(string name, string family, PhoneNumber phoneNumber,
                     string province, string city, string postalCode, string postalAddress,
                     string nationalCode)
     {
         Name = name;
         Family = family;
         PhoneNumber = phoneNumber;
-        Email = email;
         Province = province;
         City = city;
         PostalCode = postalCode;
@@ -39,10 +33,10 @@ public class UserAddress:BaseEntity
         ISActive = false;
     }
     public void Edit(string province, string city, string postalCode, string postalAddress,
-           string phoneNumber, string name, string family, string nationalCode)
+           PhoneNumber phoneNumber, string name, string family, string nationalCode)
     {
         Guard(province, city, postalCode, postalAddress,
-             phoneNumber, name, family, nationalCode);
+             PhoneNumber, name, family, nationalCode);
 
         Province = province;
         City = city;
@@ -58,8 +52,12 @@ public class UserAddress:BaseEntity
     {
         ISActive = true;
     }
+    public void SetdeActive()
+    {
+        ISActive = false;
+    }
 
-    public void Guard(string province, string city, string postalCode, string postalAddress, string phoneNumber, string name, string family, string nationalCode)
+    public void Guard(string province, string city, string postalCode, string postalAddress, PhoneNumber phoneNumber, string name, string family, string nationalCode)
     {
         NullOrEmptyDomainDataException.CheckString(province, nameof(province));
         NullOrEmptyDomainDataException.CheckString(city, nameof(city));
