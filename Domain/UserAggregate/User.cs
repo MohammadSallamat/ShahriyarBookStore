@@ -53,7 +53,7 @@ public class User : AggregateRoot
     public static User RegisterUser(PhoneNumber phoneNumber, Password password, IDomainUserService domainService)
     {
 
-        return new User("", "", phoneNumber, email: null, password, Gender.None, domainService);
+        return new User("Name", "FamilyName", phoneNumber, email: string.Empty, password, Gender.None, domainService);
 
     }
 

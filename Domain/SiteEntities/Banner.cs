@@ -16,6 +16,8 @@ public class Banner : BaseEntity
 
     public Banner(string link, string imageName, BannerPosition position)
     {
+        NullOrEmptyDomainDataException.CheckString(imageName, nameof(imageName));
+
         Guard(link);
         Link = link;
         ImageName = imageName;

@@ -30,7 +30,7 @@ public class AddOrderItemCommandHandler : IBaseCommandHandler<AddOrderItemComman
         {
             order = new Order(request.UserId);
             order.AddItem(new OrderItem(request.InventoryId,request.Count,inventory.Price),inventory.Count);
-            _orderRepository.Add(order);
+            await _orderRepository.AddAsync(order);
         }
         else
         {

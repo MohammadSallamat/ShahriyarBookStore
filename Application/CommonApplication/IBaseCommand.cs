@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Application.CommonApplication;
 
-public interface IBaseCommand : IRequest<OperationResult>
+internal interface IBaseCommand : IRequest<OperationResult>
 {
 
 }
 
-public interface IBaseCommand<TData> : IRequest<OperationResult<TData>>
+internal interface IBaseCommand<TData> : IRequest<OperationResult<TData>>
 {
 
 }

@@ -26,6 +26,9 @@ public class Password: BaseValueObject
 
     public bool Verify(string plainPassword)
     {
+        if (string.IsNullOrEmpty(Salt) || string.IsNullOrEmpty(Hash))
+            throw new InvalidOperationException("Salt یا Hash نمی‌تواند خالی باشد.");
+
         var saltBytes = Convert.FromBase64String(Salt);
         var hashToCompare = HashPassword(plainPassword, saltBytes);
         return Hash == hashToCompare;
