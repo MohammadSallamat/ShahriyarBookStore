@@ -10,7 +10,7 @@ namespace Application.UsersApp.ChargeWallet;
 
 public class ChargeUserWalletCommand : IBaseCommand
 {
-    public ChargeUserWalletCommand(long userId, int price, string description, bool isFinally, WalletType type)
+    public ChargeUserWalletCommand(long userId, int price, string description, DateTime isFinally, WalletType type)
     {
         UserId = userId;
         Price = price;
@@ -21,6 +21,6 @@ public class ChargeUserWalletCommand : IBaseCommand
     public long UserId { get; private set; }
     public int Price { get; private set; }
     public string Description { get; private set; }
-    public bool IsFinally { get; private set; }
+    public DateTime IsFinally { get; private set; }    
     public WalletType Type { get; private set; }
 }

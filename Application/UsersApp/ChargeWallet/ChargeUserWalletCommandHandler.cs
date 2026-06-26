@@ -19,7 +19,7 @@ internal class ChargeUserWalletCommandHandler : IBaseCommandHandler<ChargeUserWa
         if (user == null)
             return OperationResult.NotFound();
 
-        var wallet = new Wallet(request.Price, request.Description, request.IsFinally, request.Type);
+        var wallet = new Wallet(request.Price, request.Description,true, request.IsFinally ,request.Type);
         user.ChargeWallet(wallet);
         await _repository.Save();
         return OperationResult.Success();

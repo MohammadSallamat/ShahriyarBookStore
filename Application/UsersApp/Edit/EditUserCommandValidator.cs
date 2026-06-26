@@ -9,7 +9,7 @@ internal partial class EditUserCommandHandler
     {
         public EditUserCommandValidator()
         {
-            RuleFor(r => r.PhoneNumber.Value)
+            RuleFor(r => r.PhoneNumber)
                 .ValidPhoneNumber();
 
             RuleFor(r => r.Email)

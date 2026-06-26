@@ -30,7 +30,7 @@ internal class CreateProducteCommandHandler : IBaseCommandHandler<CreateProducte
        .ToList();
         product.SetSpecification(specifications);
 
-        _repository.Add(product);
+        await _repository.AddAsync(product);
         await _repository.Save();
         return OperationResult.Success();
     }

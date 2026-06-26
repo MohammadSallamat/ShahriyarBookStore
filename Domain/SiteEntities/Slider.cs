@@ -14,6 +14,11 @@ public class Slider : BaseEntity
     public string Link { get; private set; }
     public string ImageName { get; private set; }
 
+    private Slider()
+    {
+
+    }
+
     public Slider(string title, string link, string imageName)
     {
         NullOrEmptyDomainDataException.CheckString(imageName, nameof(imageName));

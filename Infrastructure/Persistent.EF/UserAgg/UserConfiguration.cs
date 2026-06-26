@@ -1,4 +1,5 @@
 ﻿using Domain.UserAggregate;
+using Domain.UserAggregate.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -23,12 +24,17 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
        .IsRequired()
        .HasMaxLength(50);
 
+        builder.Property(x => x.Gender)
+            .HasConversion(
+            c => c.ToString(),
+            c => (Gender)Enum.Parse(typeof(Gender), c));
+
         builder.Property(x => x.Email)
        .IsRequired();
 
         builder.Property(x => x.AvatarName)
-       .IsRequired()
-       .HasMaxLength(50);
+       .IsRequired(false)
+       .HasColumnName("نام اواتاری");
 
         builder.OwnsOne(b => b.PhoneNumber, option =>
         {
@@ -62,7 +68,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(50);
 
-            option.Property(x=>x.Family)
+            option.Property(x => x.Family)
             .IsRequired()
             .HasMaxLength(50);
 
@@ -92,7 +98,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
                 .HasColumnName("MobileNumber")
                 .HasMaxLength(11);
             });
-            
+
         });
 
         builder.OwnsMany(b => b.Wallets, option =>

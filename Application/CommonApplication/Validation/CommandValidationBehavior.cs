@@ -10,9 +10,9 @@ namespace Application.CommonApplication.Validation;
 public class CommandValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class, IRequest<TResponse>
 {
-    private readonly IList<IValidator<TRequest>> _validators;
+    private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public CommandValidationBehavior(IList<IValidator<TRequest>> validators)
+    public CommandValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
     {
         _validators = validators;
     }

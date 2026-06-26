@@ -10,6 +10,10 @@ namespace Domain.CommentAggregate;
 
 public class Comment : AggregateRoot
 {
+    private Comment()
+    {
+
+    }
     public long UserId { get; private set; }
     public long ProductId { get; private set; }
     public string Text { get; private set; }

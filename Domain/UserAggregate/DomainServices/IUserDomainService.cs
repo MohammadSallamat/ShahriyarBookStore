@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.UserAggregate.DomainServices;
 
-public interface IDomainUserService
+public interface IUserDomainService
 {
-    bool PhoneNumberIsExist(PhoneNumber phone);
+    bool PhoneNumberIsExist(string phoneNumber);
     bool EmailIsExist(string email);
 }

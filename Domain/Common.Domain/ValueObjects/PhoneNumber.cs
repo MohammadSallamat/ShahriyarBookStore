@@ -10,6 +10,7 @@ namespace Domain.Common.Domain.ValueObjects;
 
 public class PhoneNumber : BaseValueObject
 {
+    private PhoneNumber() { }
     public PhoneNumber(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || value.IsText() || value.Length is < 11 or > 11)

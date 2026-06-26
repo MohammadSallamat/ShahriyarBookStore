@@ -16,9 +16,9 @@ public class CreateRoleCommandHandler : IBaseCommandHandler<CreateRoleCommand>
     public async Task<OperationResult> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
 
-        var role = new Role(request.title);
+        var role = new Role(request.Title);
 
-        await _repository.Add(role);
+        await _repository.AddAsync(role);
         await _repository.Save();
         return OperationResult.Success();
     }

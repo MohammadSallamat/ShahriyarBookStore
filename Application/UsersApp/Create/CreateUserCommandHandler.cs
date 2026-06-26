@@ -9,8 +9,8 @@ namespace Application.UsersApp.Create;
 public class CreateUserCommandHandler : IBaseCommandHandler<CreateUserCommand>
 {
     private readonly IUserRepository _repository;
-    private readonly IDomainUserService _userDomainService;
-    public CreateUserCommandHandler(IUserRepository repository, IDomainUserService userDomainService)
+    private readonly IUserDomainService _userDomainService;
+    public CreateUserCommandHandler(IUserRepository repository, IUserDomainService userDomainService)
     {
         _repository = repository;
         _userDomainService = userDomainService;
@@ -20,10 +20,10 @@ public class CreateUserCommandHandler : IBaseCommandHandler<CreateUserCommand>
     {
         var userPassword = Password.Create(request.Password);
         var userPhone = new PhoneNumber(request.PhoneNumber);
-        var user = new User(request.Name, request.Family, userPhone
+        var user = new User(request.Name, request.Family, request.PhoneNumber
             , request.Email, userPassword, request.Gender, _userDomainService);
 
-        _repository.Add(user);
+        await _repository.AddAsync(user);
         await _repository.Save();
         return OperationResult.Success();
     }

@@ -31,7 +31,7 @@ public class Category : AggregateRoot
     public string Slug { get; private set; }
     public SeoData SeoData { get; private set; }
     public long? ParentId { get; private set; }
-    public List<Category> Childs { get; private set; }
+    public List<Category>? Childs { get; private set; }
 
     public void Edit(string title, string slug, SeoData seoData, ICategoryDomainService service)
     {

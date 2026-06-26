@@ -22,7 +22,7 @@ public class CreateBannerCommandHandler : IBaseCommandHandler<CreateBannerComman
         var imageName =await _localFile.SaveFileAndGenerateName(request.ImageFile, Directories.BannerImages);
         var banner=new Banner(request.Link,imageName,request.position);
 
-        _repository.Add(banner);
+        await _repository.AddAsync(banner);
         await _repository.Save();
         return OperationResult.Success();
     }

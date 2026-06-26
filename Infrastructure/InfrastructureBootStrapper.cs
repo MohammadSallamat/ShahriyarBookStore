@@ -39,10 +39,16 @@ public static class InfrastructureBootStrapper
         services.AddTransient<ISellerRepository, SellerRepository>();
 
         services.AddTransient<IBannerRepository, BannerRepository>();
+        services.AddTransient<ISliderRepository, SliderRepository>();
 
         services.AddTransient<IUserRepository, UserRepository>();
 
         services.AddTransient(_=>new DapperContext(connectionString));
+
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("connection string is not configured.");
+        }
 
         services.AddDbContext<ShahriarBookStoreContext>(option =>
         {

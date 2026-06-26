@@ -46,7 +46,7 @@ internal class ProductConfiguration : IEntityTypeConfiguration<Product>
               .HasMaxLength(500);
 
             option.Property(x => x.IndexPage)
-              .HasColumnName("MetaKeyWords");
+              .HasColumnName("IndexPage22");
 
             option.Property(x => x.Canonical)
               .HasColumnName("Canonical")

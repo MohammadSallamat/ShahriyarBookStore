@@ -20,7 +20,7 @@ public class CreateSellerCommandHandler : IBaseCommandHandler<CreateSellerComman
     {
         var seller = new Seller(request.UserId, request.ShopName, request.NationalCode, _domainService);
 
-        _repository.Add(seller);
+        await _repository.AddAsync(seller);
         await _repository.Save();
         return OperationResult.Success();
     }

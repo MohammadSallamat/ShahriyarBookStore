@@ -5,8 +5,12 @@ using Domain.Common.Domain.ValueObjects;
 
 namespace Domain.UserAggregate;
 
-public class UserAddress:BaseEntity
+public class UserAddress : BaseEntity
 {
+    private UserAddress()
+    {
+
+    }
     public long UserId { get; internal set; }
     public string Name { get; private set; }
     public string Family { get; private set; }
@@ -36,7 +40,7 @@ public class UserAddress:BaseEntity
            PhoneNumber phoneNumber, string name, string family, string nationalCode)
     {
         Guard(province, city, postalCode, postalAddress,
-             PhoneNumber, name, family, nationalCode);
+             phoneNumber, name, family, nationalCode);
 
         Province = province;
         City = city;

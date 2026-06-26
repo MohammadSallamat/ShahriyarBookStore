@@ -14,6 +14,10 @@ public class Banner : BaseEntity
     public string ImageName { get; private set; }
     public BannerPosition Position { get; private set; }
 
+    private Banner()
+    {
+
+    }
     public Banner(string link, string imageName, BannerPosition position)
     {
         NullOrEmptyDomainDataException.CheckString(imageName, nameof(imageName));

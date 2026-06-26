@@ -39,7 +39,7 @@ internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
               .HasMaxLength(500);
 
             option.Property(x => x.IndexPage)
-              .HasColumnName("MetaKeyWords");
+              .HasColumnName("IndexPage33");
 
             option.Property(x => x.Canonical)
               .HasColumnName("Canonical")

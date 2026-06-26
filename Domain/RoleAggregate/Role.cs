@@ -14,6 +14,10 @@ public class Role : AggregateRoot
     public string Title { get; private set; }
     public List<RolePermission> Permissions { get; private set; }
 
+    private Role()
+    {
+
+    }
     public Role(string title)
     {
         NullOrEmptyDomainDataException.CheckString(title, nameof(title));

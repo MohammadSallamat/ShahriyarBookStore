@@ -16,9 +16,13 @@ public class Product : AggregateRoot
     public long SecondarySubCategoryId { get; private set; }
     public string Slug { get; private set; }
     public SeoData SeoData { get; private set; }
-    public List<ProductImage> Images { get; private set; }
-    public List<ProductSpecification> Specifications { get; private set; }
+    public List<ProductImage>? Images { get; private set; }
+    public List<ProductSpecification>? Specifications { get; private set; }
 
+    private Product()
+    {
+
+    }
     public Product(string title, string imageName, string description, long categoryId,
        long subCategoryId, long secondarySubCategoryId, IProductDomainService domainService,
        string slug, SeoData seoData)
