@@ -19,7 +19,6 @@ public class CreateUserCommandHandler : IBaseCommandHandler<CreateUserCommand>
     public async Task<OperationResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var userPassword = Password.Create(request.Password);
-        var userPhone = new PhoneNumber(request.PhoneNumber);
         var user = new User(request.Name, request.Family, request.PhoneNumber
             , request.Email, userPassword, request.Gender, _userDomainService);
 

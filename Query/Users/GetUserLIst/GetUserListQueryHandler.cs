@@ -16,7 +16,7 @@ internal class GetUserListQueryHandler : IBaseQueryHandler<GetUserListQuery, IEn
     public async Task<IEnumerable<UserListItemDto>> Handle(GetUserListQuery request, CancellationToken cancellationToken)
     {
         using var connection = _context.CreateConnection();
-        var  query = "select Id, Name, Family, PhoneNumber , Email ,Gender from Users";
+        var  query = "select Id, Name, Family, PhoneNumber , Email ,Gender from [user].[Users]";
         return await connection.QueryAsync<UserListItemDto>(query, cancellationToken);
     }
 }

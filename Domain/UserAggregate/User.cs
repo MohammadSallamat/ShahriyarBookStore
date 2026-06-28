@@ -23,9 +23,9 @@ public class User : AggregateRoot
     public string? AvatarName { get; private set; }
     public Gender Gender { get; private set; }
 
-    public List<UserRole> Roles { get; private set; }
-    public List<UserAddress> UserAddresses { get; private set; }
-    public List<Wallet> Wallets { get; private set; }
+    public List<UserRole> Roles { get; private set; } = new ();
+    public List<UserAddress> UserAddresses { get; private set; } = new();
+    public List<Wallet> Wallets { get; private set; } = new();
 
     private User()
     {
@@ -57,7 +57,7 @@ public class User : AggregateRoot
     public static User RegisterUser(string phoneNumber, Password password, IUserDomainService domainService)
     {
 
-        return new User("Name", "FamilyName", phoneNumber, email: string.Empty, password, Gender.None, domainService);
+        return new User(string.Empty, string.Empty, phoneNumber, email: string.Empty, password, Gender.None, domainService);
 
     }
 
@@ -98,6 +98,7 @@ public class User : AggregateRoot
 
         }
         UserAddresses.Remove(oldAddress);
+        address.UserId = Id;
         UserAddresses.Add(address);
     }
     public void ChargeWallet(Wallet wallet)
@@ -108,6 +109,9 @@ public class User : AggregateRoot
 
     public void SetRole(List<UserRole> roles)
     {
+        if (Id == 0)
+            throw new InvalidDomainDataException("!کاربر ثبت نشده");
+
         roles.ForEach(f => f.UserId = Id);
         Roles.Clear();
         Roles.AddRange(roles);
@@ -115,6 +119,8 @@ public class User : AggregateRoot
 
     public void Guard(string phoneNumber, string email, IUserDomainService domainUserService)
     {
+        NullOrEmptyDomainDataException.CheckString(phoneNumber, nameof(phoneNumber));
+
         NullOrEmptyDomainDataException.CheckString(email, nameof(email));
 
         if (email.IsValidEmail() == false)
@@ -123,13 +129,11 @@ public class User : AggregateRoot
         if (phoneNumber.Length != 11)
             throw new InvalidDomainDataException("تعداد کاراکتر شماره باید 11 تا باشد.");
 
-        if (phoneNumber != null)
-            if (domainUserService.PhoneNumberIsExist(phoneNumber))
-                throw new InvalidDomainDataException("شماره موبایل تکراری است");
+        if (domainUserService.PhoneNumberIsExist(phoneNumber))
+            throw new DuplicatePhoneNumberDomainException("شماره موبایل تکراری است");
 
-        if (email != Email)
-            if (domainUserService.EmailIsExist(email))
-                throw new InvalidDomainDataException("ایمیل تکراری است");
+        if (domainUserService.EmailIsExist(email))
+            throw new DuplicateEmailDomainException("ایمیل تکراری است");
 
     }
 }

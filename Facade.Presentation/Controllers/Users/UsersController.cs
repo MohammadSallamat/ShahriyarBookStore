@@ -1,5 +1,6 @@
 ﻿using Application.CommonApplication;
 using Application.UsersApp.Create;
+using Facade.Presentation._Utils;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Query.Users.List_of_users;
@@ -25,18 +26,12 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("register")]
-    public async Task<OperationResult> CreateUser(CreateUserCommand command)
+    [HttpPost("CreateUser")]
+    public async Task<IActionResult> CreateUser(CreateUserCommand command)
     {
         var result = await _mediator.Send(command);
 
-        if (result.Status != OperationResultStatus.Success)
-        {
-            return OperationResult.Error();
-
-        }
-
-        return OperationResult.Success();
+        return result.ToActionResult();
 
     }
 

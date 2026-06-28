@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Common.Domain.Exception;
 
-public class BaseDomainException:System.Exception
+public class BaseDomainException : System.Exception
 { 
     public BaseDomainException() 
     {

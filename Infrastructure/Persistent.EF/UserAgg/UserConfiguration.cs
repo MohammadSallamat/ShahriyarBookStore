@@ -26,21 +26,22 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.Gender)
             .HasConversion(
-            c => c.ToString(),
-            c => (Gender)Enum.Parse(typeof(Gender), c));
+                v => v.ToString(),
+                v => (Gender)Enum.Parse(typeof(Gender), v)
+            );
 
         builder.Property(x => x.Email)
        .IsRequired();
 
         builder.Property(x => x.AvatarName)
        .IsRequired(false)
-       .HasColumnName("نام اواتاری");
+       .HasColumnName("AvatarName");
 
         builder.OwnsOne(b => b.PhoneNumber, option =>
         {
             option.Property(x => x.Value)
             .IsRequired()
-            .HasColumnName("MobileNumber")
+            .HasColumnName("PhoneNumber")
             .HasMaxLength(11);
         });
 

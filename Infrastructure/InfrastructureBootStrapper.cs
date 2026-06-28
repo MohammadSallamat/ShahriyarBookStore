@@ -26,22 +26,22 @@ public static class InfrastructureBootStrapper
 {
     public static void Init(this IServiceCollection services,string connectionString)
     {
-        services.AddTransient<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
 
-        services.AddTransient<ICommentRepository, CommentRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
 
-        services.AddTransient<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
 
-        services.AddTransient<IProductRepository, ProductRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
 
-        services.AddTransient<IRoleRepository, RoleRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
 
-        services.AddTransient<ISellerRepository, SellerRepository>();
+        services.AddScoped<ISellerRepository, SellerRepository>();
 
-        services.AddTransient<IBannerRepository, BannerRepository>();
-        services.AddTransient<ISliderRepository, SliderRepository>();
+        services.AddScoped<IBannerRepository, BannerRepository>();
+        services.AddScoped<ISliderRepository, SliderRepository>();
 
-        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddTransient(_=>new DapperContext(connectionString));
 
