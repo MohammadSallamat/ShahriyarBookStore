@@ -10,7 +10,7 @@ using Query.Users.List_of_users;
 using FluentValidation;
 using Application.Products;
 using Application.UsersApp;
-using Application.Categories0;
+using Application.Categories;
 using Application.Sellers;
 
 namespace Facade.Presentation.Config;
