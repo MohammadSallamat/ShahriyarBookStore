@@ -16,6 +16,16 @@ namespace Facade.Presentation
 
             // Add services to the container.
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             builder.Services.AddControllers();
 
             builder.Services.AddEndpointsApiExplorer();
@@ -33,9 +43,10 @@ namespace Facade.Presentation
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-
             }
+
             // Configure the HTTP request pipeline.
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
