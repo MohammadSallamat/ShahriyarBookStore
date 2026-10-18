@@ -15,28 +15,34 @@ import { CategoryMock } from '../../../models/models';
 
       <ul class="nav nav-pills flex-column mb-auto gap-2">
         <li class="nav-item">
-          <a class="nav-link active d-flex align-items-center gap-2" href="#" (click)="$event.preventDefault()">
+          <a class="nav-link d-flex align-items-center gap-2 text-dark" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <i class="bi bi-house-door-fill fs-5"></i>
             <span>صفحه اصلی</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-dark d-flex align-items-center gap-2" href="#" (click)="$event.preventDefault()">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" routerLink="/products" routerLinkActive="active">
             <i class="bi bi-journal-bookmark fs-5 text-success"></i>
             <span>فهرست کتاب‌ها</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-dark d-flex align-items-center gap-2" href="#" (click)="$event.preventDefault()">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" routerLink="/cart" routerLinkActive="active">
             <i class="bi bi-cart-check fs-5 text-warning"></i>
             <span>سبد خرید</span>
             <span class="badge bg-danger rounded-pill ms-auto">۲</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-dark d-flex align-items-center gap-2" href="#" (click)="$event.preventDefault()">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" routerLink="/orders" routerLinkActive="active">
             <i class="bi bi-clock-history fs-5 text-info"></i>
             <span>پیگیری سفارشات</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" routerLink="/sellers" routerLinkActive="active">
+            <i class="bi bi-shop fs-5 text-primary"></i>
+            <span>فروشندگان همکار</span>
           </a>
         </li>
       </ul>
@@ -48,7 +54,7 @@ import { CategoryMock } from '../../../models/models';
         <h6 class="fw-bold text-dark small mb-3"><i class="bi bi-tags-fill text-danger me-1"></i> دسته‌بندی موضوعی</h6>
 
         <div class="d-flex flex-column gap-2">
-          <a *ngFor="let category of mockCategories" href="#" (click)="$event.preventDefault()" class="sidebar-category-link d-flex justify-content-between align-items-center text-decoration-none text-secondary p-2 rounded">
+          <a *ngFor="let category of mockCategories" routerLink="/products" class="sidebar-category-link d-flex justify-content-between align-items-center text-decoration-none text-secondary p-2 rounded">
             <span>{{ category.title }}</span>
             <span class="badge bg-light text-dark border rounded-pill">{{ category.count }}</span>
           </a>
@@ -67,6 +73,9 @@ import { CategoryMock } from '../../../models/models';
     }
     .nav-link.active {
       background-color: #2563eb !important;
+      color: #fff !important;
+    }
+    .nav-link.active i {
       color: #fff !important;
     }
     .sidebar-category-link:hover {
