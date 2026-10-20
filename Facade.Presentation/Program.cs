@@ -4,7 +4,7 @@ using Application.CommonApplication.FileUtil.Services;
 using Application.UsersApp.Create;
 using Facade.Presentation._Utils;
 using Facade.Presentation.Config;
-using Query.Users.List_of_users;
+using Query.Users.GetById;
 
 namespace Facade.Presentation
 {
