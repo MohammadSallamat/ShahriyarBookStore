@@ -109,5 +109,22 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
         });
 
+        builder.OwnsMany(b => b.Tokens, option =>
+        {
+            option.ToTable("Tokens", "user");
+
+            option.Property(x => x.HashJwtToken)
+            .IsRequired()
+            .HasMaxLength(250);
+
+            option.Property(x => x.HashRefreshToken)
+            .IsRequired()
+            .HasMaxLength(250);
+
+            option.Property(x => x.Device)
+            .IsRequired()
+            .HasMaxLength(100);
+        });
+
     }
 }

@@ -1,0 +1,22 @@
+<div class="d-flex flex-column min-vh-100 bg-light">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Main Body with Sidebar -->
+  <div class="container-fluid flex-grow-1 py-4">
+    <div class="row g-4 h-100">
+      <!-- Sidebar Column -->
+      <div class="col-lg-3 col-xl-2 d-none d-lg-block">
+        <app-sidebar></app-sidebar>
+      </div>
+
+      <!-- Main Content Area -->
+      <main class="col-lg-9 col-xl-10">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>
