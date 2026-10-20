@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { CategoryMock } from '../../../models/models';
+import { CategoryService } from '../../../services/category.service';
+import { CategoryDto } from '../../../models/models';
 
 @Component({
   selector: 'app-sidebar',
@@ -30,7 +31,6 @@ import { CategoryMock } from '../../../models/models';
           <a class="nav-link text-dark d-flex align-items-center gap-2" routerLink="/cart" routerLinkActive="active">
             <i class="bi bi-cart-check fs-5 text-warning"></i>
             <span>سبد خرید</span>
-            <span class="badge bg-danger rounded-pill ms-auto">۲</span>
           </a>
         </li>
         <li class="nav-item">
@@ -49,14 +49,18 @@ import { CategoryMock } from '../../../models/models';
 
       <hr class="my-4">
 
-      <!-- Mock Categories List in Sidebar -->
+      <!-- Dynamic Categories List from Web API -->
       <div class="mb-2">
         <h6 class="fw-bold text-dark small mb-3"><i class="bi bi-tags-fill text-danger me-1"></i> دسته‌بندی موضوعی</h6>
 
-        <div class="d-flex flex-column gap-2">
-          <a *ngFor="let category of mockCategories" routerLink="/products" class="sidebar-category-link d-flex justify-content-between align-items-center text-decoration-none text-secondary p-2 rounded">
+        <div *ngIf="loading" class="text-center py-2">
+          <div class="spinner-border spinner-border-sm text-primary"></div>
+        </div>
+
+        <div class="d-flex flex-column gap-2" *ngIf="!loading">
+          <a *ngFor="let category of categories" [routerLink]="['/products']" [queryParams]="{categoryId: category.id}" class="sidebar-category-link d-flex justify-content-between align-items-center text-decoration-none text-secondary p-2 rounded">
             <span>{{ category.title }}</span>
-            <span class="badge bg-light text-dark border rounded-pill">{{ category.count }}</span>
+            <i class="bi bi-chevron-left small text-muted"></i>
           </a>
         </div>
       </div>
@@ -75,21 +79,35 @@ import { CategoryMock } from '../../../models/models';
       background-color: #2563eb !important;
       color: #fff !important;
     }
-    .nav-link.active i {
-      color: #fff !important;
-    }
     .sidebar-category-link:hover {
       background-color: #f8fafc;
       color: #2563eb !important;
     }
   `]
 })
-export class SidebarComponent {
-  mockCategories: CategoryMock[] = [
-    { id: 1, title: 'ادبیات و شعر فارسی', count: 42, icon: 'bi-book' },
-    { id: 2, title: 'رمان و داستان کوتاه', count: 85, icon: 'bi-journal-bookmark' },
-    { id: 3, title: 'برنامه‌نویسی و وب', count: 34, icon: 'bi-code-slash' },
-    { id: 4, title: 'تاریخ و فرهنگ', count: 29, icon: 'bi-bank' },
-    { id: 5, title: 'روانشناسی و موفقیت', count: 50, icon: 'bi-person-badge' }
+export class SidebarComponent implements OnInit {
+  categories: CategoryDto[] = [];
+  loading: boolean = true;
+
+  fallbackCategories: CategoryDto[] = [
+    { id: 1, title: 'ادبیات و شعر فارسی', slug: 'persian-literature', childs: [], creationDate: '' },
+    { id: 2, title: 'رمان و داستان کوتاه', slug: 'novels', childs: [], creationDate: '' },
+    { id: 3, title: 'برنامه‌نویسی و وب', slug: 'programming', childs: [], creationDate: '' },
+    { id: 4, title: 'تاریخ و فرهنگ', slug: 'history', childs: [], creationDate: '' }
   ];
+
+  constructor(private categoryService: CategoryService) {}
+
+  ngOnInit(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (res) => {
+        this.categories = (res && res.length > 0) ? res : this.fallbackCategories;
+        this.loading = false;
+      },
+      error: () => {
+        this.categories = this.fallbackCategories;
+        this.loading = false;
+      }
+    });
+  }
 }
