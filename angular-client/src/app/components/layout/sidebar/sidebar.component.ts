@@ -1,3 +1,7 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { CategoryMock } from '../../../models/models';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -31,6 +35,7 @@ import { CategoryDto } from '../../../models/models';
           <a class="nav-link text-dark d-flex align-items-center gap-2" routerLink="/cart" routerLinkActive="active">
             <i class="bi bi-cart-check fs-5 text-warning"></i>
             <span>سبد خرید</span>
+            <span class="badge bg-danger rounded-pill ms-auto">۲</span>
           </a>
         </li>
         <li class="nav-item">
@@ -49,6 +54,14 @@ import { CategoryDto } from '../../../models/models';
 
       <hr class="my-4">
 
+      <!-- Mock Categories List in Sidebar -->
+      <div class="mb-2">
+        <h6 class="fw-bold text-dark small mb-3"><i class="bi bi-tags-fill text-danger me-1"></i> دسته‌بندی موضوعی</h6>
+
+        <div class="d-flex flex-column gap-2">
+          <a *ngFor="let category of mockCategories" routerLink="/products" class="sidebar-category-link d-flex justify-content-between align-items-center text-decoration-none text-secondary p-2 rounded">
+            <span>{{ category.title }}</span>
+            <span class="badge bg-light text-dark border rounded-pill">{{ category.count }}</span>
       <!-- Dynamic Categories List from Web API -->
       <div class="mb-2">
         <h6 class="fw-bold text-dark small mb-3"><i class="bi bi-tags-fill text-danger me-1"></i> دسته‌بندی موضوعی</h6>
@@ -79,12 +92,23 @@ import { CategoryDto } from '../../../models/models';
       background-color: #2563eb !important;
       color: #fff !important;
     }
+    .nav-link.active i {
+      color: #fff !important;
+    }
     .sidebar-category-link:hover {
       background-color: #f8fafc;
       color: #2563eb !important;
     }
   `]
 })
+export class SidebarComponent {
+  mockCategories: CategoryMock[] = [
+    { id: 1, title: 'ادبیات و شعر فارسی', count: 42, icon: 'bi-book' },
+    { id: 2, title: 'رمان و داستان کوتاه', count: 85, icon: 'bi-journal-bookmark' },
+    { id: 3, title: 'برنامه‌نویسی و وب', count: 34, icon: 'bi-code-slash' },
+    { id: 4, title: 'تاریخ و فرهنگ', count: 29, icon: 'bi-bank' },
+    { id: 5, title: 'روانشناسی و موفقیت', count: 50, icon: 'bi-person-badge' }
+  ];
 export class SidebarComponent implements OnInit {
   categories: CategoryDto[] = [];
   loading: boolean = true;
