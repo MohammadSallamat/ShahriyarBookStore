@@ -2,6 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CategoryMock } from '../../../models/models';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { CategoryService } from '../../../services/category.service';
+import { CategoryDto } from '../../../models/models';
 
 @Component({
   selector: 'app-sidebar',
@@ -57,6 +62,18 @@ import { CategoryMock } from '../../../models/models';
           <a *ngFor="let category of mockCategories" routerLink="/products" class="sidebar-category-link d-flex justify-content-between align-items-center text-decoration-none text-secondary p-2 rounded">
             <span>{{ category.title }}</span>
             <span class="badge bg-light text-dark border rounded-pill">{{ category.count }}</span>
+      <!-- Dynamic Categories List from Web API -->
+      <div class="mb-2">
+        <h6 class="fw-bold text-dark small mb-3"><i class="bi bi-tags-fill text-danger me-1"></i> دسته‌بندی موضوعی</h6>
+
+        <div *ngIf="loading" class="text-center py-2">
+          <div class="spinner-border spinner-border-sm text-primary"></div>
+        </div>
+
+        <div class="d-flex flex-column gap-2" *ngIf="!loading">
+          <a *ngFor="let category of categories" [routerLink]="['/products']" [queryParams]="{categoryId: category.id}" class="sidebar-category-link d-flex justify-content-between align-items-center text-decoration-none text-secondary p-2 rounded">
+            <span>{{ category.title }}</span>
+            <i class="bi bi-chevron-left small text-muted"></i>
           </a>
         </div>
       </div>
@@ -92,4 +109,29 @@ export class SidebarComponent {
     { id: 4, title: 'تاریخ و فرهنگ', count: 29, icon: 'bi-bank' },
     { id: 5, title: 'روانشناسی و موفقیت', count: 50, icon: 'bi-person-badge' }
   ];
+export class SidebarComponent implements OnInit {
+  categories: CategoryDto[] = [];
+  loading: boolean = true;
+
+  fallbackCategories: CategoryDto[] = [
+    { id: 1, title: 'ادبیات و شعر فارسی', slug: 'persian-literature', childs: [], creationDate: '' },
+    { id: 2, title: 'رمان و داستان کوتاه', slug: 'novels', childs: [], creationDate: '' },
+    { id: 3, title: 'برنامه‌نویسی و وب', slug: 'programming', childs: [], creationDate: '' },
+    { id: 4, title: 'تاریخ و فرهنگ', slug: 'history', childs: [], creationDate: '' }
+  ];
+
+  constructor(private categoryService: CategoryService) {}
+
+  ngOnInit(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (res) => {
+        this.categories = (res && res.length > 0) ? res : this.fallbackCategories;
+        this.loading = false;
+      },
+      error: () => {
+        this.categories = this.fallbackCategories;
+        this.loading = false;
+      }
+    });
+  }
 }

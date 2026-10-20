@@ -6,6 +6,11 @@ using Query.Users.DTOs;
 namespace Query.Users.GetByPhoneNumber;
 
 internal class GetUserByPhoneNumberQueryHandler : IBaseQueryHandler<GetUserByPhoneNumberQuery, UserDto>
+using Query.Users.GetById;
+
+namespace Query.Users.GetByPhoneNumber;
+
+public class GetUserByPhoneNumberQueryHandler : IBaseQueryHandler<GetUserByPhoneNumberQuery, UserDto?>
 {
     private readonly ShahriarBookStoreContext _context;
 
@@ -17,6 +22,11 @@ internal class GetUserByPhoneNumberQueryHandler : IBaseQueryHandler<GetUserByPho
     public async Task<UserDto> Handle(GetUserByPhoneNumberQuery request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
+    public async Task<UserDto?> Handle(GetUserByPhoneNumberQuery request, CancellationToken cancellationToken)
+    {
+        var user = await _context.Users
+            .Include(u => u.Roles)
+            .Include(u => u.UserAddresses)
             .FirstOrDefaultAsync(u => u.PhoneNumber.Value == request.PhoneNumber, cancellationToken);
 
         if (user == null)
@@ -37,5 +47,6 @@ internal class GetUserByPhoneNumberQueryHandler : IBaseQueryHandler<GetUserByPho
                 RoleTitle = ""
             }).ToList() ?? new()
         };
+        return GetUserByIdQueryHandler.MapUser(user);
     }
 }
