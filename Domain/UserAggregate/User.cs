@@ -1,4 +1,4 @@
-﻿using Domain.Common.Domain;
+using Domain.Common.Domain;
 using Domain.Common.Domain.Exception;
 using Domain.Common.Domain.Extention;
 using Domain.Common.Domain.ValueObjects;
@@ -7,9 +7,6 @@ using Domain.UserAggregate.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.UserAggregate;
 
@@ -23,15 +20,15 @@ public class User : AggregateRoot
     public string? AvatarName { get; private set; }
     public Gender Gender { get; private set; }
 
-    public List<UserRole> Roles { get; private set; } = new ();
+    public List<UserRole> Roles { get; private set; } = new();
     public List<UserAddress> UserAddresses { get; private set; } = new();
     public List<Wallet> Wallets { get; private set; } = new();
     public List<UserToken> Tokens { get; private set; } = new();
 
     private User()
     {
-
     }
+
     public User(string name, string family, string phoneNumber, string email,
         Password password, Gender gender, IUserDomainService domainUserService)
     {
@@ -57,9 +54,7 @@ public class User : AggregateRoot
 
     public static User RegisterUser(string phoneNumber, Password password, IUserDomainService domainService)
     {
-
         return new User(string.Empty, string.Empty, phoneNumber, email: string.Empty, password, Gender.None, domainService);
-
     }
 
     public void SetAvatar(string imageName)
@@ -69,6 +64,7 @@ public class User : AggregateRoot
 
         AvatarName = imageName;
     }
+
     public void AddAddress(UserAddress address)
     {
         address.UserId = Id;
@@ -90,18 +86,19 @@ public class User : AggregateRoot
         }
         UserAddresses.Remove(address);
     }
+
     public void EditAddress(UserAddress address)
     {
         var oldAddress = UserAddresses.FirstOrDefault(x => x.Id == address.Id);
         if (oldAddress == null)
         {
             throw new NullOrEmptyDomainDataException("آدرس وجود ندارد ");
-
         }
         UserAddresses.Remove(oldAddress);
         address.UserId = Id;
         UserAddresses.Add(address);
     }
+
     public void ChargeWallet(Wallet wallet)
     {
         wallet.UserId = Id;
@@ -143,19 +140,19 @@ public class User : AggregateRoot
     {
         NullOrEmptyDomainDataException.CheckString(phoneNumber, nameof(phoneNumber));
 
-        NullOrEmptyDomainDataException.CheckString(email, nameof(email));
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            if (email.IsValidEmail() == false)
+                throw new InvalidDomainDataException(" ایمیل  نامعتبر است");
 
-        if (email.IsValidEmail() == false)
-            throw new InvalidDomainDataException(" ایمیل  نامعتبر است");
+            if (email != Email && domainUserService.EmailIsExist(email))
+                throw new DuplicateEmailDomainException("ایمیل تکراری است");
+        }
 
         if (phoneNumber.Length != 11)
             throw new InvalidDomainDataException("تعداد کاراکتر شماره باید 11 تا باشد.");
 
-        if (domainUserService.PhoneNumberIsExist(phoneNumber))
+        if (phoneNumber != PhoneNumber?.Value && domainUserService.PhoneNumberIsExist(phoneNumber))
             throw new DuplicatePhoneNumberDomainException("شماره موبایل تکراری است");
-
-        if (domainUserService.EmailIsExist(email))
-            throw new DuplicateEmailDomainException("ایمیل تکراری است");
-
     }
 }

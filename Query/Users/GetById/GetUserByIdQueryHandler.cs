@@ -6,7 +6,6 @@ using Query.Users.DTOs;
 
 namespace Query.Users.GetById;
 
-internal class GetUserByIdQueryHandler : IBaseQueryHandler<GetUserByIdQuery, UserDto>
 public class GetUserByIdQueryHandler : IBaseQueryHandler<GetUserByIdQuery, UserDto?>
 {
     private readonly ShahriarBookStoreContext _context;
@@ -16,9 +15,6 @@ public class GetUserByIdQueryHandler : IBaseQueryHandler<GetUserByIdQuery, UserD
         _context = context;
     }
 
-    public async Task<UserDto> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
-    {
-        var user = await _context.Users
     public async Task<UserDto?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
@@ -40,17 +36,9 @@ public class GetUserByIdQueryHandler : IBaseQueryHandler<GetUserByIdQuery, UserD
             CreationDate = user.CreationDate,
             Name = user.Name,
             Family = user.Family,
-            PhoneNumber = user.PhoneNumber.Value,
-            Email = user.Email,
-            AvatarName = user.AvatarName ?? "avatar.png",
-            Roles = user.Roles?.Select(r => new UserRoleDto
-            {
-                RoleId = r.RoleId,
-                RoleTitle = ""
-            }).ToList() ?? new()
             PhoneNumber = user.PhoneNumber?.Value ?? string.Empty,
             Email = user.Email,
-            AvatarName = user.AvatarName,
+            AvatarName = user.AvatarName ?? "avatar.png",
             Gender = user.Gender,
             Roles = user.Roles.Select(r => new UserRoleDto
             {

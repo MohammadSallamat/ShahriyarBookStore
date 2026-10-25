@@ -1,13 +1,15 @@
-﻿using Domain.Common.Domain;
+using Domain.Common.Domain;
 using Domain.Common.Domain.Exception;
 using Domain.Common.Domain.Extention;
 using Domain.Common.Domain.ValueObjects;
 using Domain.ProductAggregate.Services;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Domain.ProductAggregate;
 
 public class Product : AggregateRoot
 {
-
     public string Title { get; private set; }
     public string ImageName { get; private set; }
     public string Description { get; private set; }
@@ -16,13 +18,13 @@ public class Product : AggregateRoot
     public long SecondarySubCategoryId { get; private set; }
     public string Slug { get; private set; }
     public SeoData SeoData { get; private set; }
-    public List<ProductImage>? Images { get; private set; }
-    public List<ProductSpecification>? Specifications { get; private set; }
+    public List<ProductImage> Images { get; private set; } = new();
+    public List<ProductSpecification> Specifications { get; private set; } = new();
 
     private Product()
     {
-
     }
+
     public Product(string title, string imageName, string description, long categoryId,
        long subCategoryId, long secondarySubCategoryId, IProductDomainService domainService,
        string slug, SeoData seoData)
@@ -41,8 +43,8 @@ public class Product : AggregateRoot
     }
 
     public void Edit(string title, string description, long categoryId,
-        long subCategoryId, long secondarySubCategoryId, string slug, IProductDomainService domainService
-        , SeoData seoData)
+        long subCategoryId, long secondarySubCategoryId, string slug, IProductDomainService domainService,
+        SeoData seoData)
     {
         Guard(title, slug, description, domainService);
         Title = title;
@@ -57,11 +59,13 @@ public class Product : AggregateRoot
     public void AddImage(ProductImage image)
     {
         image.ProductId = Id;
+        Images ??= new List<ProductImage>();
         Images.Add(image);
     }
 
     public string RemoveImage(long id)
     {
+        Images ??= new List<ProductImage>();
         var image = Images.FirstOrDefault(f => f.Id == id);
         if (image == null)
             throw new NullOrEmptyDomainDataException("image not found.");
@@ -81,7 +85,7 @@ public class Product : AggregateRoot
         Specifications = specifications;
     }
 
-    public void Guard(string title, string slug,string description,
+    public void Guard(string title, string slug, string description,
         IProductDomainService domainService)
     {
         NullOrEmptyDomainDataException.CheckString(title, nameof(title));
