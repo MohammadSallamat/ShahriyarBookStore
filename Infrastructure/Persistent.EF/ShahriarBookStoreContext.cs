@@ -1,13 +1,14 @@
-﻿using Domain.CategoryAggregate;
+using Domain.CategoryAggregate;
 using Domain.CommentAggregate;
+using Domain.DiscountAggregate;
 using Domain.OrderAggregate;
 using Domain.ProductAggregate;
 using Domain.RoleAggregate;
 using Domain.SellerAggregate;
 using Domain.SiteEntities;
 using Domain.UserAggregate;
+using Domain.WishlistAggregate;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace Infrastructure.Persistent.EF;
 
@@ -20,6 +21,7 @@ public class ShahriarBookStoreContext : DbContext
 
     public DbSet<Category> Categories { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<Discount> Discounts { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Role> Roles { get; set; }
@@ -28,7 +30,7 @@ public class ShahriarBookStoreContext : DbContext
     public DbSet<Slider> Sliders { get; set; }
     public DbSet<Banner> Banners { get; set; }
     public DbSet<User> Users { get; set; }
-
+    public DbSet<Wishlist> Wishlists { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -41,4 +43,4 @@ public class ShahriarBookStoreContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShahriarBookStoreContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
-}   
+}
