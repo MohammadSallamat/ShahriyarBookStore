@@ -1,3 +1,6 @@
+using Application.Roles.Create;
+using Application.Roles.Edit;
+using Facade.Presentation._Utils;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Query.Roles.GetById;
@@ -31,5 +34,19 @@ public class RoleController : ControllerBase
             return NotFound();
 
         return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateRoleCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Edit([FromBody] EditRoleCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
     }
 }

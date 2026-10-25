@@ -1,3 +1,11 @@
+using Application.UsersApp.AddAdress;
+using Application.UsersApp.ChargeWallet;
+using Application.UsersApp.Create;
+using Application.UsersApp.DeleteAdress;
+using Application.UsersApp.Edit;
+using Application.UsersApp.EditAddress;
+using Application.UsersApp.RegisterUser;
+using Facade.Presentation._Utils;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Query.Users.DTOs;
@@ -43,5 +51,54 @@ public class UserController : ControllerBase
             return NotFound();
 
         return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Edit([FromForm] EditUserCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPost("addresses")]
+    public async Task<IActionResult> AddAddress([FromBody] AddAddressUserCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPut("addresses")]
+    public async Task<IActionResult> EditAddress([FromBody] EditUserAddressCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpDelete("addresses")]
+    public async Task<IActionResult> DeleteAddress([FromBody] DeleteUserAddressCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPost("charge-wallet")]
+    public async Task<IActionResult> ChargeWallet([FromBody] ChargeUserWalletCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
     }
 }

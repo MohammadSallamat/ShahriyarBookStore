@@ -1,25 +1,22 @@
-﻿using Domain.CategoryAggregate.Services;
+using Domain.CategoryAggregate.Services;
 using Domain.Common.Domain;
 using Domain.Common.Domain.Exception;
 using Domain.Common.Domain.Extention;
 using Domain.Common.Domain.ValueObjects;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.CategoryAggregate;
-
 
 public class Category : AggregateRoot
 {
     private Category()
     {
-
+        Childs = new List<Category>();
     }
+
     public Category(string title, string slug, SeoData seoData, ICategoryDomainService service)
     {
+        Childs = new List<Category>();
         slug = slug?.ToSlug();
         Guard(title, slug, service);
         Title = title;
@@ -31,7 +28,7 @@ public class Category : AggregateRoot
     public string Slug { get; private set; }
     public SeoData SeoData { get; private set; }
     public long? ParentId { get; private set; }
-    public List<Category>? Childs { get; private set; }
+    public List<Category> Childs { get; private set; } = new();
 
     public void Edit(string title, string slug, SeoData seoData, ICategoryDomainService service)
     {
@@ -44,6 +41,7 @@ public class Category : AggregateRoot
 
     public void AddChild(string title, string slug, SeoData seoData, ICategoryDomainService service)
     {
+        Childs ??= new List<Category>();
         Childs.Add(new Category(title, slug, seoData, service)
         {
             ParentId = Id
@@ -60,4 +58,3 @@ public class Category : AggregateRoot
                 throw new SlugIsDuplicateException();
     }
 }
-

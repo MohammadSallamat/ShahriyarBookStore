@@ -1,3 +1,8 @@
+using Application.Products.AddImage;
+using Application.Products.Create;
+using Application.Products.Edit;
+using Application.Products.RemoveImage;
+using Facade.Presentation._Utils;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Query.Products.DTOs;
@@ -43,5 +48,33 @@ public class ProductController : ControllerBase
             return NotFound();
 
         return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromForm] CreateProducteCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Edit([FromForm] EditProductcommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPost("images")]
+    public async Task<IActionResult> AddImage([FromForm] AddImageProductCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpDelete("images")]
+    public async Task<IActionResult> RemoveImage([FromBody] RemoveImageProductCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
     }
 }

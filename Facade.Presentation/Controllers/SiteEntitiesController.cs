@@ -1,3 +1,8 @@
+using Application.SiteEntities.Banners.Create;
+using Application.SiteEntities.Banners.Edit;
+using Application.SiteEntities.Sliders.Create;
+using Application.SiteEntities.Sliders.Edit;
+using Facade.Presentation._Utils;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Query.SiteEntities.GetBanners;
@@ -28,5 +33,33 @@ public class SiteEntitiesController : ControllerBase
     {
         var result = await _mediator.Send(new GetBannersQuery());
         return Ok(result);
+    }
+
+    [HttpPost("sliders")]
+    public async Task<IActionResult> CreateSlider([FromForm] CreateSliderCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPut("sliders")]
+    public async Task<IActionResult> EditSlider([FromForm] EditSliderCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPost("banners")]
+    public async Task<IActionResult> CreateBanner([FromForm] CreateBannerCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
+    }
+
+    [HttpPut("banners")]
+    public async Task<IActionResult> EditBanner([FromForm] EditBannerCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.ToActionResult();
     }
 }
