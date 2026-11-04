@@ -1,4 +1,4 @@
-﻿using Domain.Common.Domain;
+using Domain.Common.Domain;
 using Domain.Common.Domain.Repository;
 using Infrastructure.Persistent.EF;
 using Microsoft.EntityFrameworkCore;
@@ -6,12 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure._Utilities;
 
-public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity :BaseEntity
+public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
 {
     protected readonly ShahriarBookStoreContext _context;
 
@@ -38,12 +37,11 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity :B
     public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> expression)
     {
         return _context.Set<TEntity>().AnyAsync(expression);
-
     }
-    //que to method
+
     public TEntity Get(long id)
     {
-       return _context.Set<TEntity>().FirstOrDefault(x=>x.Id.Equals(id));
+        return _context.Set<TEntity>().FirstOrDefault(x => x.Id.Equals(id));
     }
 
     public async Task<TEntity> GetAsync(long id)
@@ -59,11 +57,15 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity :B
     public async Task<int> Save()
     {
         return await _context.SaveChangesAsync();
-
     }
 
     public void Update(TEntity entity)
     {
         _context.Set<TEntity>().Update(entity);
+    }
+
+    public void Delete(TEntity entity)
+    {
+        _context.Set<TEntity>().Remove(entity);
     }
 }

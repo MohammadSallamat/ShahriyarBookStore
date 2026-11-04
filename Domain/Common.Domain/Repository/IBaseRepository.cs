@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Common.Domain.Repository;
@@ -18,6 +16,8 @@ public interface IBaseRepository<T> where T : BaseEntity
     Task AddRange(ICollection<T> entities);
 
     void Update(T entity);
+
+    void Delete(T entity);
 
     Task<int> Save();
 

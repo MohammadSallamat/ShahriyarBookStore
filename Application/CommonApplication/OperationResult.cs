@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +29,24 @@ public class OperationResult<TData>
         {
             Status = OperationResultStatus.NotFound,
             Message = NotFoundMessage,
+            Data = default(TData),
+        };
+    }
+    public static OperationResult<TData> NotFound(string message)
+    {
+        return new OperationResult<TData>()
+        {
+            Status = OperationResultStatus.NotFound,
+            Message = message,
+            Data = default(TData),
+        };
+    }
+    public static OperationResult<TData> Error(string message)
+    {
+        return new OperationResult<TData>()
+        {
+            Status = OperationResultStatus.Error,
+            Message = message,
             Data = default(TData),
         };
     }
@@ -107,5 +125,3 @@ public enum OperationResultStatus
     Success = 200,
     NotFound = 404
 }
-
-
