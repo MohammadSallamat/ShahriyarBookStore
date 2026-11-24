@@ -43,17 +43,16 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasColumnName("PhoneNumber")
             .HasMaxLength(11);
+            option.HasIndex(x => x.Value).IsUnique();
         });
 
         builder.OwnsOne(b => b.Password, option =>
         {
             option.Property(x => x.Hash)
-            .HasColumnName("PasswordHash")
-            .IsRequired();
+            .HasColumnName("PasswordHash").IsRequired(false);
 
             option.Property(x => x.Salt)
-            .HasColumnName("PasswordSalt")
-            .IsRequired();
+            .HasColumnName("PasswordSalt").IsRequired(false);
         });
 
         builder.OwnsMany(b => b.Roles, option =>

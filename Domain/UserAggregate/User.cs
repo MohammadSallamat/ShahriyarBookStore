@@ -16,7 +16,7 @@ public class User : AggregateRoot
     public string Family { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public string Email { get; private set; }
-    public Password Password { get; private set; }
+    public Password? Password { get; private set; }
     public string? AvatarName { get; private set; }
     public Gender Gender { get; private set; }
 
@@ -30,7 +30,7 @@ public class User : AggregateRoot
     }
 
     public User(string name, string family, string phoneNumber, string email,
-        Password password, Gender gender, IUserDomainService domainUserService)
+        Password? password, Gender gender, IUserDomainService domainUserService)
     {
         Guard(phoneNumber, email, domainUserService);
         Name = name;
@@ -55,6 +55,11 @@ public class User : AggregateRoot
     public static User RegisterUser(string phoneNumber, Password password, IUserDomainService domainService)
     {
         return new User(string.Empty, string.Empty, phoneNumber, email: string.Empty, password, Gender.None, domainService);
+    }
+
+    public static User RegisterPasswordless(string phoneNumber, IUserDomainService domainService)
+    {
+        return new User(string.Empty, string.Empty, phoneNumber, string.Empty, null, Gender.None, domainService);
     }
 
     public void SetAvatar(string imageName)
@@ -117,7 +122,7 @@ public class User : AggregateRoot
 
     public void AddToken(string hashJwtToken, string hashRefreshToken, DateTime tokenExpireDate, DateTime refreshTokenExpireDate, string device)
     {
-        var activeTokenCount = Tokens.Count(t => t.RefreshTokenExpireDate > DateTime.Now);
+        var activeTokenCount = Tokens.Count(t => t.RefreshTokenExpireDate > DateTime.UtcNow);
         if (activeTokenCount >= 12)
             throw new InvalidDomainDataException("امکان ورود همزمان با بیش از ۱۲ دستگاه وجود ندارد.");
 

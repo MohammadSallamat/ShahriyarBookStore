@@ -27,12 +27,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Query", "Query\Query.csproj", "{AC66BA8F-775F-4893-96E9-417B63092FA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShahriarBookStore.Test", "ShahriarBookStore.Test\ShahriarBookStore.Test.csproj", "{24C67984-BD1C-42DE-AE3D-64F8DE43F364}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{24C67984-BD1C-42DE-AE3D-64F8DE43F364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24C67984-BD1C-42DE-AE3D-64F8DE43F364}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24C67984-BD1C-42DE-AE3D-64F8DE43F364}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24C67984-BD1C-42DE-AE3D-64F8DE43F364}.Release|Any CPU.Build.0 = Release|Any CPU
 		{56D5798A-4662-485D-9625-28F5D4FB5702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{56D5798A-4662-485D-9625-28F5D4FB5702}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56D5798A-4662-485D-9625-28F5D4FB5702}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,15 +1,8 @@
 using Application.CommonApplication;
-using Application.CommonApplication.SecurityUtil;
-using Application.UsersApp.AddToken;
-using Application.UsersApp.RemoveToken;
-using Facade.Presentation._Utils;
+using Application.UsersApp.Authentication;
+using Facade.Presentation.Config;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Query.Users.GetById;
-using Query.Users.GetByPhoneNumber;
-using Query.Users.UserTokens.GetByRefreshToken;
-using System;
-using System.Threading.Tasks;
 
 namespace Facade.Presentation.Controllers;
 
@@ -18,123 +11,48 @@ namespace Facade.Presentation.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IConfiguration _configuration;
-
-    public AuthController(IMediator mediator, IConfiguration configuration)
-    {
-        _mediator = mediator;
-        _configuration = configuration;
-    }
+    public AuthController(IMediator mediator) => _mediator = mediator;
+    private string Device => Request.Headers.UserAgent.ToString();
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto dto, CancellationToken ct)
     {
-        var user = await _mediator.Send(new GetUserByPhoneNumberQuery(loginDto.PhoneNumber));
+        var result = await _mediator.Send(new LoginCommand(dto.PhoneNumber, dto.Password, Device), ct);
+        return result == null ? BadRequest(OperationResult.Error("اطلاعات ورود نامعتبر است.")) : Ok(result);
+    }
 
-        if (user == null)
-            return BadRequest(OperationResult.Error("کاربری با این مشخصات یافت نشد."));
+    [HttpPost("request-otp")]
+    public async Task<IActionResult> RequestOtp([FromBody] OtpRequestDto dto, CancellationToken ct)
+    {
+        try { await _mediator.Send(new RequestOtpCommand(dto.PhoneNumber), ct); }
+        catch (OtpDeliveryUnavailableException) { return StatusCode(503, new { message = "OTP delivery is unavailable." }); }
+        return Ok(new { message = "در صورت امکان، کد ارسال خواهد شد." });
+    }
 
-        var secretKey = _configuration["Jwt:SecretKey"] ?? "ShahriarBookStore_SecretKey_2026_JWT_Token_Key_Long";
-        var issuer = _configuration["Jwt:Issuer"] ?? "ShahriarBookStore";
-        var audience = _configuration["Jwt:Audience"] ?? "ShahriarBookStoreClient";
-
-        var tokenResult = JwtTokenBuilder.GenerateToken(user.Id, user.Name, user.Family, user.PhoneNumber, secretKey, issuer, audience);
-        var hashJwt = JwtTokenBuilder.Sha256Hash(tokenResult.AccessToken);
-        var hashRefreshToken = JwtTokenBuilder.Sha256Hash(tokenResult.RefreshToken);
-
-        var device = Request.Headers["User-Agent"].ToString();
-        if (string.IsNullOrEmpty(device))
-            device = "Unknown Device";
-
-        var addTokenCommand = new AddUserTokenCommand(
-            user.Id,
-            hashJwt,
-            hashRefreshToken,
-            tokenResult.TokenExpireDate,
-            tokenResult.RefreshTokenExpireDate,
-            device
-        );
-
-        var result = await _mediator.Send(addTokenCommand);
-        if (result.Status != OperationResultStatus.Success)
-            return BadRequest(result);
-
-        return Ok(new
-        {
-            accessToken = tokenResult.AccessToken,
-            refreshToken = tokenResult.RefreshToken
-        });
+    [HttpPost("verify-otp")]
+    public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequestDto dto, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new VerifyOtpCommand(dto.PhoneNumber, dto.Code, Device), ct);
+        return result == null ? BadRequest(OperationResult.Error("کد نامعتبر یا منقضی شده است.")) : Ok(result);
     }
 
     [HttpPost("refresh-token")]
-    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto dto)
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto dto, CancellationToken ct)
     {
-        var hashRefreshToken = JwtTokenBuilder.Sha256Hash(dto.RefreshToken);
-        var tokenDto = await _mediator.Send(new GetUserTokenByRefreshTokenQuery(hashRefreshToken));
-
-        if (tokenDto == null || tokenDto.RefreshTokenExpireDate < DateTime.Now)
-            return BadRequest(OperationResult.Error("توکن بازیابی نامعتبر یا منقضی شده است."));
-
-        var user = await _mediator.Send(new GetUserByIdQuery(tokenDto.UserId));
-        if (user == null)
-            return BadRequest(OperationResult.Error("کاربر یافت نشد."));
-
-        var secretKey = _configuration["Jwt:SecretKey"] ?? "ShahriarBookStore_SecretKey_2026_JWT_Token_Key_Long";
-        var issuer = _configuration["Jwt:Issuer"] ?? "ShahriarBookStore";
-        var audience = _configuration["Jwt:Audience"] ?? "ShahriarBookStoreClient";
-
-        var tokenResult = JwtTokenBuilder.GenerateToken(user.Id, user.Name, user.Family, user.PhoneNumber, secretKey, issuer, audience);
-        var hashJwt = JwtTokenBuilder.Sha256Hash(tokenResult.AccessToken);
-        var newHashRefreshToken = JwtTokenBuilder.Sha256Hash(tokenResult.RefreshToken);
-
-        await _mediator.Send(new RemoveUserTokenCommand(user.Id, tokenDto.Id));
-
-        var device = Request.Headers["User-Agent"].ToString();
-        if (string.IsNullOrEmpty(device))
-            device = "Unknown Device";
-
-        await _mediator.Send(new AddUserTokenCommand(
-            user.Id,
-            hashJwt,
-            newHashRefreshToken,
-            tokenResult.TokenExpireDate,
-            tokenResult.RefreshTokenExpireDate,
-            device
-        ));
-
-        return Ok(new
-        {
-            accessToken = tokenResult.AccessToken,
-            refreshToken = tokenResult.RefreshToken
-        });
+        var result = await _mediator.Send(new RefreshAuthCommand(dto.RefreshToken, Device), ct);
+        return result == null ? BadRequest(OperationResult.Error("توکن بازیابی نامعتبر یا منقضی شده است.")) : Ok(result);
     }
 
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout([FromBody] LogoutRequestDto dto)
+    public async Task<IActionResult> Logout([FromBody] LogoutRequestDto dto, CancellationToken ct)
     {
-        var hashRefreshToken = JwtTokenBuilder.Sha256Hash(dto.RefreshToken);
-        var tokenDto = await _mediator.Send(new GetUserTokenByRefreshTokenQuery(hashRefreshToken));
-
-        if (tokenDto == null)
-            return Ok();
-
-        await _mediator.Send(new RemoveUserTokenCommand(tokenDto.UserId, tokenDto.Id));
+        await _mediator.Send(new LogoutCommand(dto.RefreshToken), ct);
         return Ok(OperationResult.Success());
     }
 }
 
-public class LoginRequestDto
-{
-    public string PhoneNumber { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-}
-
-public class RefreshTokenRequestDto
-{
-    public string RefreshToken { get; set; } = string.Empty;
-}
-
-public class LogoutRequestDto
-{
-    public string RefreshToken { get; set; } = string.Empty;
-}
+public class LoginRequestDto { public string PhoneNumber { get; set; } = string.Empty; public string Password { get; set; } = string.Empty; }
+public class OtpRequestDto { public string PhoneNumber { get; set; } = string.Empty; }
+public class VerifyOtpRequestDto { public string PhoneNumber { get; set; } = string.Empty; public string Code { get; set; } = string.Empty; }
+public class RefreshTokenRequestDto { public string RefreshToken { get; set; } = string.Empty; }
+public class LogoutRequestDto { public string RefreshToken { get; set; } = string.Empty; }

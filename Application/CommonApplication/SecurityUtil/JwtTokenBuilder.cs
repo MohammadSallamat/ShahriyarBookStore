@@ -26,11 +26,12 @@ public static class JwtTokenBuilder
         {
             new(ClaimTypes.NameIdentifier, userId.ToString()),
             new(ClaimTypes.Name, $"{name} {family}".Trim()),
-            new(ClaimTypes.MobilePhone, phoneNumber)
+            new(ClaimTypes.MobilePhone, phoneNumber),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        var tokenExpireDate = DateTime.Now.AddDays(1);
-        var refreshTokenExpireDate = DateTime.Now.AddDays(30);
+        var tokenExpireDate = DateTime.UtcNow.AddDays(1);
+        var refreshTokenExpireDate = DateTime.UtcNow.AddDays(30);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -43,7 +44,7 @@ public static class JwtTokenBuilder
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var accessToken = tokenHandler.WriteToken(token);
-        var refreshToken = Guid.NewGuid().ToString().Replace("-", "");
+        var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
 
         return new JwtTokenResult(accessToken, refreshToken, tokenExpireDate, refreshTokenExpireDate);
     }

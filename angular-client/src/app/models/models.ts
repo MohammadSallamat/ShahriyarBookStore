@@ -7,6 +7,10 @@ export interface CategoryMock {
 }
 
 export interface ProductSpecificationMock {
+  key: string;
+  value: string;
+}
+
 export interface SeoData {
   metaTitle?: string;
   metaDescription?: string;
@@ -107,6 +111,8 @@ export interface SliderMock {
   description: string;
   imageUrl: string;
   linkText: string;
+}
+
 export interface ProductDto {
   id: number;
   creationDate: string;

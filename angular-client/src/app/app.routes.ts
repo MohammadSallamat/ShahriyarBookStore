@@ -5,6 +5,7 @@ import { ProductDetailComponent } from './components/product-detail/product-deta
 import { CartComponent } from './components/cart/cart.component';
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { SellerListComponent } from './components/seller-list/seller-list.component';
+import { AuthComponent } from './components/auth/auth.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'cart', component: CartComponent },
   { path: 'orders', component: OrderListComponent },
   { path: 'sellers', component: SellerListComponent },
+  { path: 'login', component: AuthComponent },
   { path: '**', redirectTo: '' }
 ];

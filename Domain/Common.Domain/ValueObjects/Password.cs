@@ -31,7 +31,7 @@ public class Password: BaseValueObject
 
         var saltBytes = Convert.FromBase64String(Salt);
         var hashToCompare = HashPassword(plainPassword, saltBytes);
-        return Hash == hashToCompare;
+        return CryptographicOperations.FixedTimeEquals(Convert.FromBase64String(Hash), Convert.FromBase64String(hashToCompare));
     }
 
     private static string HashPassword(string password, byte[] salt)
