@@ -9,6 +9,7 @@ using Domain.SiteEntities;
 using Domain.UserAggregate;
 using Domain.WishlistAggregate;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Persistent.EF.UserAgg;
 
 namespace Infrastructure.Persistent.EF;
 
@@ -41,6 +42,13 @@ public class ShahriarBookStoreContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShahriarBookStoreContext).Assembly);
+        modelBuilder.Entity<OtpChallenge>(entity =>
+        {
+            entity.ToTable("OtpChallenges", "user");
+            entity.HasKey(x => x.PhoneNumber);
+            entity.Property(x => x.PhoneNumber).HasMaxLength(11);
+            entity.Property(x => x.CodeHash).HasMaxLength(64).IsRequired();
+        });
         base.OnModelCreating(modelBuilder);
     }
 }

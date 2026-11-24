@@ -1,3 +1,4 @@
+using Application.UsersApp.Authentication;
 using Domain.CategoryAggregate;
 using Domain.CommentAggregate;
 using Domain.DiscountAggregate;
@@ -39,6 +40,7 @@ public static class InfrastructureBootStrapper
         services.AddScoped<IBannerRepository, BannerRepository>();
         services.AddScoped<ISliderRepository, SliderRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IWishlistRepository, WishlistRepository>();
 
         services.AddTransient(_ => new DapperContext(connectionString));

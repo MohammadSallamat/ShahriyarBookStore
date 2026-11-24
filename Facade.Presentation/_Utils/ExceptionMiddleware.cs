@@ -10,10 +10,12 @@ namespace Facade.Presentation._Utils;
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionMiddleware> _logger;
 
-    public ExceptionMiddleware(RequestDelegate next)
+    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task Invoke(HttpContext context)
@@ -78,11 +80,9 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            await context.Response.WriteAsJsonAsync(new
-            {
-                Type = ex.GetType().FullName,
-                Message = ex.Message
-            });
+            _logger.LogError(ex, "Unhandled request failure");
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            await context.Response.WriteAsJsonAsync(new { Message = "An unexpected error occurred." });
         }
     }
 }

@@ -703,12 +703,10 @@ namespace Infrastructure.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Hash")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("PasswordHash");
 
                             b1.Property<string>("Salt")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("PasswordSalt");
 
@@ -733,10 +731,28 @@ namespace Infrastructure.Migrations
 
                             b1.HasKey("UserId");
 
+                            b1.HasIndex("Value").IsUnique();
+
                             b1.ToTable("Users", "user");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
+                        });
+
+                    b.OwnsMany("Domain.UserAggregate.UserToken", "Tokens", b1 =>
+                        {
+                            b1.Property<long>("UserId").HasColumnType("bigint");
+                            b1.Property<long>("Id").ValueGeneratedOnAdd().HasColumnType("bigint");
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<long>("Id"));
+                            b1.Property<DateTime>("CreationDate").HasColumnType("datetime2");
+                            b1.Property<string>("Device").IsRequired().HasMaxLength(100).HasColumnType("nvarchar(100)");
+                            b1.Property<string>("HashJwtToken").IsRequired().HasMaxLength(250).HasColumnType("nvarchar(250)");
+                            b1.Property<string>("HashRefreshToken").IsRequired().HasMaxLength(250).HasColumnType("nvarchar(250)");
+                            b1.Property<DateTime>("TokenExpireDate").HasColumnType("datetime2");
+                            b1.Property<DateTime>("RefreshTokenExpireDate").HasColumnType("datetime2");
+                            b1.HasKey("UserId", "Id");
+                            b1.ToTable("Tokens", "user");
+                            b1.WithOwner().HasForeignKey("UserId");
                         });
 
                     b.OwnsMany("Domain.UserAggregate.UserAddress", "UserAddresses", b1 =>
@@ -885,17 +901,30 @@ namespace Infrastructure.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.Navigation("Password")
-                        .IsRequired();
+                    b.Navigation("Password");
 
                     b.Navigation("PhoneNumber")
                         .IsRequired();
 
                     b.Navigation("Roles");
 
+                    b.Navigation("Tokens");
+
                     b.Navigation("UserAddresses");
 
                     b.Navigation("Wallets");
+                });
+
+            modelBuilder.Entity("Infrastructure.Persistent.EF.UserAgg.OtpChallenge", b =>
+                {
+                    b.Property<string>("PhoneNumber").HasMaxLength(11).HasColumnType("nvarchar(11)");
+                    b.Property<string>("CodeHash").IsRequired().HasMaxLength(64).HasColumnType("nvarchar(64)");
+                    b.Property<DateTime>("ExpiresAtUtc").HasColumnType("datetime2");
+                    b.Property<DateTime>("LastSentAtUtc").HasColumnType("datetime2");
+                    b.Property<int>("Attempts").HasColumnType("int");
+                    b.Property<bool>("Consumed").HasColumnType("bit");
+                    b.HasKey("PhoneNumber");
+                    b.ToTable("OtpChallenges", "user");
                 });
 
             modelBuilder.Entity("Domain.CategoryAggregate.Category", b =>

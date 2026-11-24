@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -33,13 +35,14 @@ import { RouterModule } from '@angular/router';
             </span>
           </a>
 
-          <!-- User Profile -->
-          <div class="d-flex align-items-center gap-2 text-white border-start ps-3 me-2">
-            <i class="bi bi-person-circle fs-4 text-warning"></i>
-            <div class="d-none d-sm-block text-end">
-              <span class="d-block fw-medium small">کاربر مهمان</span>
-              <small class="text-white-50" style="font-size: 0.75rem;">توسعه‌دهنده بک‌اند</small>
-            </div>
+          <a *ngIf="!auth.isAuthenticated()" routerLink="/login" class="btn btn-outline-light btn-sm text-nowrap">
+            <i class="bi bi-person-circle me-1" aria-hidden="true"></i> ورود / ثبت‌نام
+          </a>
+          <div *ngIf="auth.isAuthenticated()" class="d-flex align-items-center gap-2 text-white">
+            <span class="d-none d-md-inline small">حساب کاربری</span>
+            <button type="button" class="btn btn-outline-light btn-sm text-nowrap" [disabled]="loggingOut" (click)="logout()">
+              {{ loggingOut ? 'در حال خروج...' : 'خروج' }}
+            </button>
           </div>
         </div>
       </div>
@@ -50,6 +53,26 @@ import { RouterModule } from '@angular/router';
       background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important;
       border-bottom: 2px solid #f59e0b;
     }
+    @media (max-width: 575px) {
+      header .container-fluid { flex-wrap: wrap; gap: .75rem; }
+      header .navbar-brand { font-size: 1rem; margin: 0; }
+      header .container-fluid > .d-flex { gap: .5rem !important; }
+    }
   `]
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  loggingOut = false;
+
+  constructor(public readonly auth: AuthService, private readonly router: Router) {}
+
+  logout(): void {
+    if (this.loggingOut) return;
+    this.loggingOut = true;
+    this.auth.logout().pipe(finalize(() => this.loggingOut = false)).subscribe({
+      next: () => void this.router.navigateByUrl('/'),
+      error: () => {
+        void this.router.navigate(['/login'], { queryParams: { logoutError: '1' } });
+      }
+    });
+  }
+}

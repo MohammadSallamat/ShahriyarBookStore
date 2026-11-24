@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "types": ["vitest/globals"] },
+  "files": [
+    "src/app/services/auth.service.ts",
+    "src/app/services/auth.interceptor.ts",
+    "src/app/services/auth.service.spec.ts",
+    "src/app/components/auth/auth.component.ts",
+    "src/app/components/layout/header/header.component.ts"
+  ],
+  "include": []
+}

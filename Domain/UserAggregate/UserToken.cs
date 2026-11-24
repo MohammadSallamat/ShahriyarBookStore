@@ -18,10 +18,10 @@ public class UserToken : BaseEntity
         NullOrEmptyDomainDataException.CheckString(hashRefreshToken, nameof(hashRefreshToken));
         NullOrEmptyDomainDataException.CheckString(device, nameof(device));
 
-        if (tokenExpireDate < DateTime.Now)
+        if (tokenExpireDate < DateTime.UtcNow)
             throw new InvalidDomainDataException("Token Expire Date is invalid");
 
-        if (refreshTokenExpireDate < DateTime.Now)
+        if (refreshTokenExpireDate < DateTime.UtcNow)
             throw new InvalidDomainDataException("Refresh Token Expire Date is invalid");
 
         HashJwtToken = hashJwtToken;
